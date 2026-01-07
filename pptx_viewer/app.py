@@ -121,6 +121,44 @@ def notes():
     return render_template("notes.html", slides=slides)
 
 
+@app.route("/reveal")
+def reveal():
+    """Serve a Reveal.js deck generated from slides and notes."""
+    ensure_slides()
+    ensure_notes()
+
+    notes_file = SLIDES_DIR / "notes.json"
+    slides_data = []
+
+    if notes_file.exists():
+        try:
+            notes = json.loads(notes_file.read_text(encoding="utf-8"))
+        except Exception:
+            notes = []
+    else:
+        notes = []
+
+    # Build slides list: prefer notes index mapping; fallback to available PNGs
+    for entry in notes:
+        idx = entry.get("index")
+        img_name = f"slide_{idx:03d}.png"
+        img_path = SLIDES_DIR / img_name
+        if not img_path.exists():
+            # try to find any matching png at position
+            candidates = sorted([p.name for p in SLIDES_DIR.glob("*.png")])
+            img_name = candidates[idx-1] if (idx-1) < len(candidates) else (candidates[0] if candidates else None)
+
+        slides_data.append({"index": idx, "img": img_name, "notes": entry.get("notes", "")})
+
+    # If no notes present, just use found images
+    if not slides_data:
+        candidates = sorted([p.name for p in SLIDES_DIR.glob("*.png")])
+        for i, name in enumerate(candidates, start=1):
+            slides_data.append({"index": i, "img": name, "notes": ""})
+
+    return render_template("reveal.html", slides=slides_data)
+
+
 @app.route("/")
 def index():
     ensure_slides()

@@ -52,3 +52,7 @@ Notes
 Notes & Assets
 - The app now extracts speaker notes and slide assets. Visit `http://<host>:<port>/notes` to browse notes and download embedded images.
 - Extracted assets are stored under `slides/assets/` and a `slides/notes.json` file lists the notes and asset filenames.
+
+Reveal.js deck
+- You can view the slides as a Reveal.js presentation (with speaker notes) at `http://<host>:<port>/reveal`.
+- In Reveal, press `s` to open the speaker notes window (or append `?presenter=true`).

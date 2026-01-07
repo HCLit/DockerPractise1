@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reveal.js Deck</title>
+    <!-- Reveal.js CSS via CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css" id="theme">
+    <style>
+      .reveal img { max-width: 100%; height: auto; display:block; margin: 0 auto; }
+      .top-links { position: absolute; left: 12px; top: 12px; z-index: 50 }
+      .top-links a { color: #222; margin-right: 8px }
+    </style>
+  </head>
+  <body>
+    <div class="top-links"><a href="{{ url_for('index') }}">Viewer</a> · <a href="{{ url_for('notes') }}">Notes</a></div>
+
+    <div class="reveal">
+      <div class="slides">
+        {% for s in slides %}
+        <section data-markdown>
+          <img src="{{ url_for('slides', filename=s.img) }}" alt="slide {{ s.index }}">
+          {% if s.notes %}
+            <aside class="notes">{{ s.notes|e }}</aside>
+          {% endif %}
+        </section>
+        {% endfor %}
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/notes/notes.js"></script>
+    <script>
+      Reveal.initialize({
+        hash: true,
+        plugins: [ RevealNotes ]
+      });
+    </script>
+  </body>
+</html>

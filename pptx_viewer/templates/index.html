@@ -8,7 +8,7 @@
   </head>
   <body>
     <div class="viewer">
-      <div style="position:absolute;left:12px;top:12px;"><a href="{{ url_for('notes') }}">Notes & Assets</a></div>
+      <div style="position:absolute;left:12px;top:12px;"><a href="{{ url_for('notes') }}">Notes & Assets</a> · <a href="{{ url_for('reveal') }}" target="_blank">Reveal Deck</a></div>
       <button id="prev">◀</button>
       <div class="slide-wrapper">
         {% if images %}
