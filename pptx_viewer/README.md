@@ -57,3 +57,4 @@ Reveal.js deck
 - You can view the slides as a Reveal.js presentation (with speaker notes) at `http://<host>:<port>/reveal`.
 - In Reveal, press `s` to open the speaker notes window (or append `?presenter=true`).
 - The Reveal page now includes a thumbnail strip (bottom) for quick navigation and a small custom theme for cleaner visuals. Click any thumbnail to jump to that slide or use the keyboard (← →) to navigate.
+- Thumbnails can be toggled on/off with the **Toggle Thumbnails** button. The initial visibility can also be set with the `thumbs` query parameter (e.g. `/reveal?thumbs=false`). The user's preference is persisted in browser localStorage.
