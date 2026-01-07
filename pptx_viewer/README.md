@@ -60,6 +60,9 @@ Reveal.js deck
 - Thumbnails can be toggled on/off with the **Toggle Thumbnails** button. The initial visibility can also be set with the `thumbs` query parameter (e.g. `/reveal?thumbs=false`). The user's preference is persisted in browser localStorage.
 - The main viewer (`/`) now has an **Open Reveal** button that opens the deck with your current thumbnail preference (reads localStorage and includes `?thumbs=true|false` in the URL). This makes it easy to share or reopen the deck with the same thumbnail state.
 
+CI
+- A GitHub Actions workflow (`.github/workflows/ci.yml`) runs unit tests on push and PRs. A separate job runs the optional Playwright E2E test on pushes (it installs Playwright browsers and runs the E2E test with `RUN_E2E=1`).
+
 Running tests
 - A small pytest integration suite is included: `tests/test_viewer_link.py`.
   - `test_open_reveal_link_present_and_script` validates the viewer HTML contains the Open Reveal link and the JS that sets its href.
