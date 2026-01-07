@@ -58,3 +58,4 @@ Reveal.js deck
 - In Reveal, press `s` to open the speaker notes window (or append `?presenter=true`).
 - The Reveal page now includes a thumbnail strip (bottom) for quick navigation and a small custom theme for cleaner visuals. Click any thumbnail to jump to that slide or use the keyboard (← →) to navigate.
 - Thumbnails can be toggled on/off with the **Toggle Thumbnails** button. The initial visibility can also be set with the `thumbs` query parameter (e.g. `/reveal?thumbs=false`). The user's preference is persisted in browser localStorage.
+- The main viewer (`/`) now has an **Open Reveal** button that opens the deck with your current thumbnail preference (reads localStorage and includes `?thumbs=true|false` in the URL). This makes it easy to share or reopen the deck with the same thumbnail state.
