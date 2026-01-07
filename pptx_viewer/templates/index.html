@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PPTX Slide Viewer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  </head>
+  <body>
+    <div class="viewer">
+      <button id="prev">◀</button>
+      <div class="slide-wrapper">
+        {% if images %}
+        <img id="slide" src="{{ url_for('slides', filename=images[0]) }}" alt="slide">
+        <div id="counter">1 / {{ images|length }}</div>
+        {% else %}
+        <div class="empty">No slides found. Place a .pptx at the project root or set PPTX_FILE environment variable.</div>
+        {% endif %}
+      </div>
+      <button id="next">▶</button>
+    </div>
+
+    <script>
+      const images = {{ images|tojson }};
+      let idx = 0;
+      const slideEl = document.getElementById('slide');
+      const counter = document.getElementById('counter');
+
+      function show(i){
+        if(!images.length) return;
+        idx = (i + images.length) % images.length;
+        slideEl.src = `/slides/${images[idx]}`;
+        counter.textContent = `${idx+1} / ${images.length}`;
+      }
+
+      document.getElementById('prev').addEventListener('click', ()=> show(idx-1));
+      document.getElementById('next').addEventListener('click', ()=> show(idx+1));
+
+      window.addEventListener('keydown', e=>{
+        if(e.key === 'ArrowLeft') show(idx-1);
+        if(e.key === 'ArrowRight') show(idx+1);
+      });
+    </script>
+  </body>
+</html>
