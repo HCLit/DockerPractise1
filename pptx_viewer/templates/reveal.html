@@ -7,6 +7,7 @@
     <!-- Reveal.js CSS via CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css" id="theme">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reveal-theme.css') }}">
     <style>
       .reveal img { max-width: 100%; height: auto; display:block; margin: 0 auto; }
       .top-links { position: absolute; left: 12px; top: 12px; z-index: 50 }
@@ -14,7 +15,14 @@
     </style>
   </head>
   <body>
-    <div class="top-links"><a href="{{ url_for('index') }}">Viewer</a> · <a href="{{ url_for('notes') }}">Notes</a></div>
+    <div class="top-links"><a href="{{ url_for('index') }}">Viewer</a> · <a href="{{ url_for('notes') }}">Notes</a> · <a href="{{ url_for('notes') }}">Reveal Deck</a> <button id="toggle-thumbs" aria-pressed="false" style="margin-left:8px">Toggle Thumbnails</button></div>
+
+    <script>
+      // Use client preference if present, otherwise fall back to server-provided value.
+      const __REVEAL_THUMBS = (localStorage.getItem('reveal_thumbs') !== null)
+        ? (localStorage.getItem('reveal_thumbs') === '1')
+        : {{ thumbs|tojson }};
+    </script>
 
     <div class="reveal">
       <div class="slides">
@@ -29,12 +37,45 @@
       </div>
     </div>
 
+    <!-- Thumbnail strip -->
+    <div id="thumbs" aria-hidden="false"></div>
+
+    <script>
+      // Expose slides list for thumbnail script
+      const __REVEAL_SLIDES = {{ slides|tojson }};
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/notes/notes.js"></script>
+    <script src="{{ url_for('static', filename='js/reveal-thumbs.js') }}"></script>
     <script>
       Reveal.initialize({
         hash: true,
+        controls: true,
+        progress: true,
+        slideNumber: true,
         plugins: [ RevealNotes ]
+      });
+
+      // initialize thumbnails once Reveal ready
+      Reveal.on('ready', ()=>{
+        if(window.revealThumbsInit){
+          window.revealThumbsInit(__REVEAL_SLIDES, __REVEAL_THUMBS);
+        }
+
+        // set up UI toggle button behavior
+        const btn = document.getElementById('toggle-thumbs');
+        if(btn){
+          // set initial label based on computed initial state
+          const initial = (typeof window.isRevealThumbsVisible === 'function') ? window.isRevealThumbsVisible() : __REVEAL_THUMBS;
+          btn.textContent = initial ? 'Hide Thumbnails' : 'Show Thumbnails';
+
+          btn.addEventListener('click', ()=>{
+            const visible = window.toggleRevealThumbs ? window.toggleRevealThumbs() : !__REVEAL_THUMBS;
+            try{ localStorage.setItem('reveal_thumbs', visible ? '1' : '0'); }catch(e){}
+            btn.textContent = visible ? 'Hide Thumbnails' : 'Show Thumbnails';
+          });
+        }
       });
     </script>
   </body>

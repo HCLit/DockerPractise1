@@ -1,7 +1,7 @@
 import os
 import json
 import time
-from flask import Flask, render_template, send_from_directory, url_for
+from flask import Flask, render_template, send_from_directory, url_for, request
 from pathlib import Path
 import subprocess
 
@@ -156,7 +156,14 @@ def reveal():
         for i, name in enumerate(candidates, start=1):
             slides_data.append({"index": i, "img": name, "notes": ""})
 
-    return render_template("reveal.html", slides=slides_data)
+    # Determine initial thumbnail visibility from query param (overridden by client localStorage)
+    thumbs_param = request.args.get('thumbs')
+    if thumbs_param is None:
+        thumbs = True
+    else:
+        thumbs = not (thumbs_param.lower() in ("0", "false", "no", "off"))
+
+    return render_template("reveal.html", slides=slides_data, thumbs=thumbs)
 
 
 @app.route("/")

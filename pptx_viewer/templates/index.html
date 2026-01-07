@@ -8,7 +8,10 @@
   </head>
   <body>
     <div class="viewer">
-      <div style="position:absolute;left:12px;top:12px;"><a href="{{ url_for('notes') }}">Notes & Assets</a> · <a href="{{ url_for('reveal') }}" target="_blank">Reveal Deck</a></div>
+      <div style="position:absolute;left:12px;top:12px;">
+        <a href="{{ url_for('notes') }}">Notes & Assets</a> ·
+        <a href="#" id="open-reveal" target="_blank">Open Reveal</a>
+      </div>
       <button id="prev">◀</button>
       <div class="slide-wrapper">
         {% if images %}
@@ -41,6 +44,27 @@
         if(e.key === 'ArrowLeft') show(idx-1);
         if(e.key === 'ArrowRight') show(idx+1);
       });
+
+      // Open Reveal with current thumbnail preference
+      (function(){
+        const openReveal = document.getElementById('open-reveal');
+        function currentThumbs(){
+          const v = localStorage.getItem('reveal_thumbs');
+          if(v === null) return true; // default on
+          return v === '1';
+        }
+        function updateOpenLink(){
+          if(!openReveal) return;
+          const thumbs = currentThumbs();
+          openReveal.href = `/reveal?thumbs=${thumbs ? 'true' : 'false'}`;
+          openReveal.textContent = `Open Reveal (thumbs: ${thumbs ? 'on' : 'off'})`;
+        }
+        updateOpenLink();
+        // react to storage changes made in other tabs/windows
+        window.addEventListener('storage', e=>{
+          if(e.key === 'reveal_thumbs') updateOpenLink();
+        });
+      })();
     </script>
   </body>
 </html>
