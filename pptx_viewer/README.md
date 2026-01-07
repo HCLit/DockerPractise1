@@ -9,12 +9,15 @@ Features
 
 Quick start (local)
 
-1. Install prerequisites (LibreOffice)
+1. Install prerequisites (LibreOffice and Poppler)
 
    macOS (Homebrew):
    ```
    brew install --cask libreoffice
+   brew install poppler    # provides pdftoppm used for multi-slide PNG output
    ```
+
+   Note: the converter now produces one PNG per slide (named `slide_001.png`, `slide_002.png`, ...). If you're using Docker, poppler is already included in the image.
 
 2. Install Python deps:
 
@@ -45,3 +48,11 @@ docker run -p 5000:5000 -v $(pwd)/slides:/app/slides --env PPTX_FILE=/app/e_lear
 Notes
 - LibreOffice must be available in the runtime (the Dockerfile installs it).
 - If your PPTX has embedded fonts or special content, LibreOffice's conversion may vary.
+
+Notes & Assets
+- The app now extracts speaker notes and slide assets. Visit `http://<host>:<port>/notes` to browse notes and download embedded images.
+- Extracted assets are stored under `slides/assets/` and a `slides/notes.json` file lists the notes and asset filenames.
+
+Reveal.js deck
+- You can view the slides as a Reveal.js presentation (with speaker notes) at `http://<host>:<port>/reveal`.
+- In Reveal, press `s` to open the speaker notes window (or append `?presenter=true`).

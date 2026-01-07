@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Notes & Assets</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+      .notes { max-width: 980px; margin: 24px auto; }
+      .slide-note { background:#fff;border:1px solid #eee;padding:12px;margin-bottom:12px;border-radius:6px }
+      .assets img{ max-height:160px; margin-right:8px; border:1px solid #ddd }
+      .slide-header{ display:flex; justify-content:space-between; align-items:center }
+    </style>
+  </head>
+  <body>
+    <div class="notes">
+      <h1>Speaker Notes & Assets</h1>
+      <p><a href="{{ url_for('index') }}">← Back to viewer</a> · <a href="{{ url_for('reveal') }}" target="_blank">Open Reveal Deck</a></p>
+
+      {% if slides %}
+        {% for s in slides %}
+          <div class="slide-note">
+            <div class="slide-header">
+              <strong>Slide {{ s.index }}</strong>
+              <small>{{ s.assets|length }} asset(s)</small>
+            </div>
+            <div class="notes-text">
+              {% if s.notes %}
+                <pre>{{ s.notes }}</pre>
+              {% else %}
+                <em>No speaker notes for this slide.</em>
+              {% endif %}
+            </div>
+            {% if s.assets %}
+              <div class="assets">
+                {% for a in s.assets %}
+                  <a href="{{ url_for('slides', filename='assets/' + a) }}" target="_blank"><img src="{{ url_for('slides', filename='assets/' + a) }}" alt="asset"></a>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty">No notes found. Ensure a PPTX is placed at project root or set PPTX_FILE environment variable, then open this page again.</div>
+      {% endif %}
+    </div>
+  </body>
+</html>
