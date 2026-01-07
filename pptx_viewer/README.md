@@ -65,6 +65,15 @@ Reveal.js deck
 CI
 - A GitHub Actions workflow (`.github/workflows/ci.yml`) runs unit tests on push and PRs. A separate job runs the optional Playwright E2E test on pushes (it installs Playwright browsers and runs the E2E test with `RUN_E2E=1`).
 
+Publishing Docker images
+- A workflow (`.github/workflows/publish-docker.yml`) builds and publishes Docker images to Docker Hub. It runs on pushes to `main|master|develop` branches and on tag pushes.
+- Set the following repository secrets in GitHub (Repository -> Settings -> Secrets & variables -> Actions):
+  - `DOCKERHUB_USERNAME` — your Docker Hub username
+  - `DOCKERHUB_TOKEN` — Docker Hub password or access token (recommended when 2FA is enabled)
+
+Tagging and pushes
+- The workflow will push images to `$DOCKERHUB_USERNAME/pptx-viewer:latest` and also tag images with the commit sha and the git ref name (branch or tag). If you want images published only on semver tags, we can change the trigger/filter.
+
 Running tests
 - A small pytest integration suite is included: `tests/test_viewer_link.py`.
   - `test_open_reveal_link_present_and_script` validates the viewer HTML contains the Open Reveal link and the JS that sets its href.
