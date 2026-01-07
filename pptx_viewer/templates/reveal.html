@@ -7,6 +7,7 @@
     <!-- Reveal.js CSS via CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css" id="theme">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reveal-theme.css') }}">
     <style>
       .reveal img { max-width: 100%; height: auto; display:block; margin: 0 auto; }
       .top-links { position: absolute; left: 12px; top: 12px; z-index: 50 }
@@ -29,12 +30,31 @@
       </div>
     </div>
 
+    <!-- Thumbnail strip -->
+    <div id="thumbs" aria-hidden="false"></div>
+
+    <script>
+      // Expose slides list for thumbnail script
+      const __REVEAL_SLIDES = {{ slides|tojson }};
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/notes/notes.js"></script>
+    <script src="{{ url_for('static', filename='js/reveal-thumbs.js') }}"></script>
     <script>
       Reveal.initialize({
         hash: true,
+        controls: true,
+        progress: true,
+        slideNumber: true,
         plugins: [ RevealNotes ]
+      });
+
+      // initialize thumbnails once Reveal ready
+      Reveal.on('ready', ()=>{
+        if(window.revealThumbsInit){
+          window.revealThumbsInit(__REVEAL_SLIDES);
+        }
       });
     </script>
   </body>
