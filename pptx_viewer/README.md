@@ -1,5 +1,7 @@
 # PPTX Slide Viewer
 
+[![CI](https://github.com/HCLit/DockerPractise1/actions/workflows/ci.yml/badge.svg)](https://github.com/HCLit/DockerPractise1/actions/workflows/ci.yml)
+
 A small Flask app that converts a PowerPoint `.pptx` into PNG slides (using LibreOffice) and serves a simple web viewer.
 
 Features
