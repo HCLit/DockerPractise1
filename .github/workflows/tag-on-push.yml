@@ -1,0 +1,50 @@
+name: Tag on push
+
+on:
+  push: {}
+
+jobs:
+  tag_on_push:
+    # only run for branch pushes (skip tag refs)
+    if: startsWith(github.ref, 'refs/heads/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create and push tag
+        id: create_tag
+        env:
+          TAG_PREFIX: push
+        run: |
+          set -e
+          SHORT_SHA=${GITHUB_SHA::7}
+          TIMESTAMP=$(date -u +%Y%m%d%H%M%S)
+          TAG="${TAG_PREFIX}-${TIMESTAMP}-${SHORT_SHA}"
+          echo "Creating tag: $TAG"
+
+          # if tag already exists on remote, skip
+          if git ls-remote --exit-code --tags origin "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists, skipping creation."
+            echo "tag=$TAG" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          git tag -a "$TAG" -m "Tag created by GitHub Actions on $GITHUB_REF"
+          git push origin "refs/tags/$TAG"
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Report created tag
+        run: |
+          echo "Created tag: ${{ steps.create_tag.outputs.tag }}"
