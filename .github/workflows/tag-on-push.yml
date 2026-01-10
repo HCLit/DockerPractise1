@@ -48,3 +48,25 @@ jobs:
       - name: Report created tag
         run: |
           echo "Created tag: ${{ steps.create_tag.outputs.tag }}"
+
+      - name: Create GitHub release
+        if: steps.create_tag.outputs.tag != ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.create_tag.outputs.tag }}"
+          REPO="${{ github.repository }}"
+          echo "Checking for existing release for $TAG"
+          status_code=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$REPO/releases/tags/$TAG")
+          if [ "$status_code" = "200" ]; then
+            echo "Release already exists for $TAG, skipping"
+            exit 0
+          fi
+          echo "Creating release for $TAG"
+          body="Automated release created by GitHub Actions for $TAG (ref ${GITHUB_REF})"
+          payload=$(cat <<EOF
+{"tag_name":"$TAG","name":"$TAG","body":"$body","draft":false,"prerelease":false}
+EOF
+)
+          curl -s -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" -d "$payload" "https://api.github.com/repos/$REPO/releases"
+          echo "Release created for $TAG"
