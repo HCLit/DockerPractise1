@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+  <head><meta charset="utf-8"><title>Courses</title></head>
+  <body>
+    <h1>Courses</h1>
+    <ul>
+      {% for c in courses %}
+        <li><a href="{{ url_for('course', course_id=c.id) }}">{{ c.title }}</a></li>
+      {% else %}
+        <li>No courses found</li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
